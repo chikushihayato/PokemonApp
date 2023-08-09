@@ -1,17 +1,37 @@
 package com.example.pokemonapp;
 
 public class Item {
-    int image;
+    String name;
+    int id;
+    String imageUrl;
 
-    public Item(int image) {
-        this.image = image;
+    public Item(String name, int id, String imageUrl) {
+        this.name = name;
+        this.id = id;
+        this.imageUrl = imageUrl;
     }
 
-    public int getImage() {
-        return image;
+    public String getName() {
+        return name;
     }
 
-    public void setImage(int image) {
-        this.image = image;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
