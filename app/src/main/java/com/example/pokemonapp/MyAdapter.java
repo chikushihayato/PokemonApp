@@ -13,18 +13,16 @@ import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
-    Context context;
     List<Pokemon> Pokemons;
 
-    public MyAdapter(Context context, List<Pokemon> Pokemons) {
-        this.context = context;
+    public MyAdapter(List<Pokemon> Pokemons) {
         this.Pokemons = Pokemons;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_view,parent,false));
+        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.pokemon_view,parent,false));
     }
 
     @Override
@@ -33,7 +31,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         String numText = String.valueOf(id);
         holder.idView.setText("No. " + numText);
         String imageUrl = Pokemons.get(position).getImageUrl();
-        Glide.with(holder.itemView).load(imageUrl).into(holder.pokemonView);
+        Glide.with(holder.pokemonView).load(imageUrl).into(holder.pokemonView);
         holder.nameView.setText(Pokemons.get(position).getName());
     }
 

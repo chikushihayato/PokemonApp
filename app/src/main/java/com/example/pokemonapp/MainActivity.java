@@ -4,17 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,25 +23,48 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ThreadTest GetPokemon = new ThreadTest(this);
-
-        GetPokemon.start();
-
-        try {
-            GetPokemon.join();
-        } catch (InterruptedException e) {
-            // 例外処理
-            e.printStackTrace();
-        }
-
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), Pokemons));
+        PokemonGetThread PokemonGet = new PokemonGetThread(this);
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PokemonGet.start();
+                try {
+                    PokemonGet.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // PokemonGetの処理が完了した後に実行される
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LinearLayout linearLayout = findViewById(R.id.Load);
+                        linearLayout.setVisibility(View.GONE);
+
+                        recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
+                        recyclerView.setAdapter(new MyAdapter(Pokemons));
+                    }
+                });
+            }
+        });
+
+        thread.start();
+
+//        try {
+//            PokemonGet.join();
+//        } catch (InterruptedException e) {
+//            // 例外処理
+//            e.printStackTrace();
+//        }
+
+//        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+//        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), Pokemons));
     }
 
-    public void setItems(List<Pokemon> Pokemons) {
-        this.Pokemons = Pokemons;
+    public void setItems(List<Pokemon> pokemons) {
+        this.Pokemons = pokemons;
     }
 
 }
